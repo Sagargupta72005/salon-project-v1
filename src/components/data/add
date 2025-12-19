@@ -1,0 +1,30 @@
+{
+    title: "Waxing & Threading",
+    description:
+      "All kinds of waxing including arms, underarms, legs, full body, bikini, and more. Eyebrow, upper lip, lower lip, chin, nostrils, and full face.",
+    image:
+      "https://plus.unsplash.com/premium_photo-1661431392914-e3fc8ff0e51a?q=80&w=1308&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  },
+  {
+    title: "Bridal Make Up",
+    description:
+      "Bridal HD makeover, Airbrush makeover, full coverage, half coverage, saree drape – simple, silk or heavy, single line and Batik eyelash and more.",
+    image:
+      "https://images.unsplash.com/photo-1550005869-5fca7db35ddb?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  },
+  {
+    title: "Feet Care",
+    description:
+      "Different types of pedicure including Taffi Coffee, Crystal, Derma infusion, Snow White, Pedicure Rose, Mandarin Mango and more.",
+    image:
+      "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  },
+  {
+    title: "Nail Care",
+    description:
+      "Nail paint and polish, nail cutting and filing, gel paint application and removal, 3D nail art, bridal nail art, nail extensions, glitter extensions, etc.",
+    image:
+      "https://images.unsplash.com/photo-1457972729786-0411a3b2b626?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  },
+
+  in service,home
