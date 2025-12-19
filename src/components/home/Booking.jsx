@@ -1,96 +1,76 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { useDarkMode } from "../Dark/DarkModeContext";
 import SectionHeader from "../Header/Header";
 
-/* ---------- STATIC DATA ---------- */
-const DAYS_DECEMBER_2025 = [
-  "", "", 1, 2, 3, 4, 5,
-  6, 7, 8, 9, 10, 11, 12,
-  13, 14, 15, 16, 17, 18, 19,
-  20, 21, 22, 23, 24, 25, 26,
-  27, 28, 29, 30, 31, "", ""
-];
-
+/* ---------- APPOINTMENTS (REAL DATES) ---------- */
 const APPOINTMENTS = {
-  13: [
+  "2025-12-11": [
+    { name: "Henry Ford", time: "11:00 am" },
+    { name: "Karen Smith", time: "1:00 pm" }
+  ],
+  "2025-12-12": [
+    { name: "Tim Rogers", time: "9:00 am" },
+    { name: "Sophie Turner", time: "10:30 am" }
+  ],
+  "2025-12-13": [
     { name: "Bill Barrot", time: "7:15 am" },
     { name: "John Walker", time: "7:30 am" },
     { name: "Arthur Klein", time: "8:00 am" },
     { name: "Maria Lopez", time: "9:15 am" }
-  ],
-  12: [
-    { name: "Tim Rogers", time: "9:00 am" },
-    { name: "Sophie Turner", time: "10:30 am" }
-  ],
-  11: [
-    { name: "Henry Ford", time: "11:00 am" },
-    { name: "Karen Smith", time: "1:00 pm" }
   ]
 };
 
-/* ---------- TODAY ---------- */
-const getInitialDay = () => {
-  const today = new Date();
-  const isDecember2025 =
-    today.getFullYear() === 2025 && today.getMonth() === 11;
+/* ---------- HELPERS ---------- */
+const formatKey = (date) =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
+    date.getDate()
+  ).padStart(2, "0")}`;
 
-  return isDecember2025 ? today.getDate() : 1;
+const generateCalendar = (year, month) => {
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  const startPadding = (firstDay.getDay() + 6) % 7; // monday start
+  const days = [];
+
+  for (let i = 0; i < startPadding; i++) days.push(null);
+  for (let d = 1; d <= lastDay.getDate(); d++) days.push(d);
+
+  return days;
 };
 
 /* ---------- MODAL ---------- */
-const BookingModal = ({ selectedDay, slot, onClose, darkMode }) => {
+const BookingModal = ({ selectedDate, slot, onClose, darkMode }) => {
   if (!slot) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
       <div
-        className={`rounded-lg shadow-xl w-full max-w-md p-5 
-          ${darkMode ? "bg-neutral-900 text-white" : "bg-neutral-800 text-gray-200"}`}
+        className={`w-full max-w-md rounded-lg p-5
+          ${darkMode ? "bg-neutral-900 text-white" : "bg-neutral-800 text-white"}`}
       >
-        <div className="flex justify-between items-center mb-3">
-          <h3 className="font-bold text-sm tracking-wider">
-            REQUEST AN APPOINTMENT
-          </h3>
-          <button onClick={onClose} className="text-xl font-bold">×</button>
+        <div className="flex justify-between mb-3">
+          <h3 className="font-bold text-sm tracking-wider">REQUEST APPOINTMENT</h3>
+          <button onClick={onClose} className="text-xl">×</button>
         </div>
 
-        <p className="text-sm opacity-90">
-          Please confirm that you would like to request this appointment:
+        <p className="text-sm opacity-80 mb-3">
+          {selectedDate.toDateString()} at {slot.time}
         </p>
 
-        <div
-          className={`border rounded-lg p-3 mt-3 
-            ${darkMode ? "border-gray-600" : "border-gray-300"}`}
-        >
+        <div className="border border-gray-600 rounded p-3 mb-4">
           <p className="font-bold text-yellow-400">{slot.name}</p>
-          <p className="text-sm mt-1 opacity-80">
-            {selectedDay} Dec at {slot.time}
-          </p>
         </div>
 
-        <p className="font-semibold mt-4 text-sm">Your Information *</p>
-
-        <div className="flex flex-col sm:flex-row gap-2 mt-2">
-          <input
-            className="border rounded px-3 py-2 w-full"
-            placeholder="Name..."
-          />
-          <input
-            className="border rounded px-3 py-2 w-full"
-            placeholder="Email Address..."
-          />
+        <div className="flex flex-col sm:flex-row gap-2">
+          <input className="border rounded px-3 py-2 bg-transparent" placeholder="Name" />
+          <input className="border rounded px-3 py-2 bg-transparent" placeholder="Email" />
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-2 mt-4">
-          <button className="bg-yellow-600 text-white px-4 py-2 rounded-lg">
-            Request Appointment
+        <div className="flex gap-2 mt-4">
+          <button className="bg-yellow-600 px-4 py-2 rounded w-full">
+            Request
           </button>
-
-          <button
-            onClick={onClose}
-            className={`border px-4 py-2 rounded-lg 
-              ${darkMode ? "border-gray-500" : "border-neutral-400"}`}
-          >
+          <button onClick={onClose} className="border px-4 py-2 rounded w-full">
             Cancel
           </button>
         </div>
@@ -99,87 +79,81 @@ const BookingModal = ({ selectedDay, slot, onClose, darkMode }) => {
   );
 };
 
-/* ---------- APPOINTMENT CARD ---------- */
-const AppointmentCard = ({ appt, onSelect, darkMode }) => (
-  <div
-    className={`border-b pb-3 last:border-b-0 cursor-pointer
-      ${darkMode ? "border-gray-600" : "border-gray-400"}`}
-    onClick={() => onSelect(appt)}
-  >
-    <p className="font-semibold text-yellow-400">{appt.name}</p>
-    <p className={`text-sm ${darkMode ? "text-gray-200" : "text-gray-800"}`}>
-      {appt.time}
-    </p>
-  </div>
-);
-
-/* ---------- MAIN COMPONENT ---------- */
+/* ---------- MAIN ---------- */
 const Booking = () => {
   const { darkMode } = useDarkMode();
-  const [selectedDay, setSelectedDay] = useState(getInitialDay());
+
+  const today = new Date();
+  const [currentDate, setCurrentDate] = useState(
+    new Date(today.getFullYear(), today.getMonth(), 1)
+  );
+  const [selectedDay, setSelectedDay] = useState(today);
   const [selectedSlot, setSelectedSlot] = useState(null);
 
-  const handleDayClick = useCallback((day) => {
-    if (day) setSelectedDay(day);
-  }, []);
+  const calendarDays = useMemo(
+    () => generateCalendar(currentDate.getFullYear(), currentDate.getMonth()),
+    [currentDate]
+  );
 
-  const getAppointmentsForDay = (day) => APPOINTMENTS[day] || [];
+  const monthLabel = currentDate.toLocaleString("default", {
+    month: "long",
+    year: "numeric"
+  });
+
+  const selectedKey = formatKey(selectedDay);
+  const appointments = APPOINTMENTS[selectedKey] || [];
+
+  const changeMonth = (dir) => {
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() + dir, 1)
+    );
+  };
+
+  const handleDayClick = useCallback(
+    (day) => {
+      if (!day) return;
+      setSelectedDay(
+        new Date(currentDate.getFullYear(), currentDate.getMonth(), day)
+      );
+    },
+    [currentDate]
+  );
 
   return (
-    <div
-      className={`h-full w-full flex flex-col overflow-hidden  border-t-2 border-yellow-900  items-center py-16 px-4 transition
-        ${darkMode ? "bg-gray-900 text-white" : "bg-neutral-900 text-white"}`}
-    >
-      {/* <h1 className="text-3xl sm:text-4xl font-semibold text-yellow-100 underline mb-20">
-        Book in Advance
-      </h1> */}
-      
-      <SectionHeader
-  title="Book in Advance"
-  as="h1"
-  className="py-22"
-/>
+    <div className={`min-h-screen px-4 py-16 ${darkMode ? "bg-gray-900" : "bg-neutral-900"} text-white`}>
+      <SectionHeader title="Book in Advance" as="h1" />
 
-      {/* Calendar + Side Appointments */}
-      <div className="flex w-full max-w-5xl gap-6">
+      <div className="flex flex-col lg:flex-row max-w-5xl mx-auto gap-6 mt-10">
         {/* CALENDAR */}
-        <div
-          className={`rounded-lg shadow-xl flex-1 transition text-white
-            ${darkMode ? "bg-gray-700" : "bg-neutral-700 bg-opacity-90"}`}
-        >
-          {/* MONTH BAR */}
-          <div className={`flex justify-between items-center px-4 py-5 rounded-t-lg
-            ${darkMode ? "bg-neutral-800 text-white" : "bg-neutral-800 text-white"}`}>
-            <button className="text-xl font-bold">{"<"}</button>
-            <span className="font-semibold">DECEMBER 2025</span>
-            <button className="text-xl font-bold">{">"}</button>
+        <div className="flex-1 rounded-lg bg-neutral-800">
+          <div className="flex justify-between px-4 py-4 bg-neutral-900 rounded-t">
+            <button onClick={() => changeMonth(-1)}>‹</button>
+            <span className="font-semibold">{monthLabel}</span>
+            <button onClick={() => changeMonth(1)}>›</button>
           </div>
 
-          {/* WEEKDAYS */}
-          <div className={`grid grid-cols-7 text-center text-xs sm:text-sm font-semibold border-b py-2
-            ${darkMode ? "text-gray-300 border-gray-600" : "text-white border-gray-300"}`}>
-            {["MON","TUE","WED","THU","FRI","SAT","SUN"].map((d) => (
+          <div className="grid grid-cols-7 text-center text-xs py-2">
+            {["MON","TUE","WED","THU","FRI","SAT","SUN"].map(d => (
               <div key={d}>{d}</div>
             ))}
           </div>
 
-          {/* DAYS */}
-          <div className="grid grid-cols-7 gap-2 p-4 text-center">
-            {DAYS_DECEMBER_2025.map((day, idx) => {
-              const isSelected = day === selectedDay;
+          <div className="grid grid-cols-7 gap-2 p-4">
+            {calendarDays.map((day, i) => {
+              const isSelected =
+                day &&
+                selectedDay.getDate() === day &&
+                selectedDay.getMonth() === currentDate.getMonth();
+
               return (
                 <div
-                  key={idx}
+                  key={i}
                   onClick={() => handleDayClick(day)}
-                  className={`flex items-center justify-center h-12 sm:h-16 rounded-full text-sm sm:text-base font-medium transition
-                    ${!day
-                      ? "opacity-30"
-                      : isSelected
-                        ? "bg-yellow-200 text-black font-extrabold shadow-md"
-                        : darkMode
-                          ? "text-gray-400 hover:bg-neutral-800 cursor-pointer"
-                          : "text-white hover:bg-gray-200 cursor-pointer"
-                    }`}
+                  className={`h-12 flex items-center justify-center rounded-full cursor-pointer
+                    ${!day ? "opacity-20" :
+                      isSelected
+                        ? "bg-yellow-400 text-black font-bold"
+                        : "hover:bg-neutral-700"}`}
                 >
                   {day}
                 </div>
@@ -188,33 +162,31 @@ const Booking = () => {
           </div>
         </div>
 
-        {/* SIDE APPOINTMENTS */}
-        <div
-          className={`w-80 rounded-lg shadow-lg p-4 flex flex-col max-h-[600px] overflow-y-auto
-            ${darkMode ? "bg-neutral-700" : "bg-neutral-500 bg-opacity-90"}`}
-        >
+        {/* APPOINTMENTS */}
+        <div className="w-full lg:w-80 bg-neutral-700 rounded-lg p-4 max-h-[600px] overflow-y-auto">
           <h2 className="text-center font-semibold mb-4">
-            Appointments on <span className="font-bold">{selectedDay} Dec</span>
+            {selectedDay.toDateString()}
           </h2>
 
-          {getAppointmentsForDay(selectedDay).length === 0 ? (
-            <p className="text-center text-sm opacity-80">No appointments</p>
+          {appointments.length === 0 ? (
+            <p className="text-center opacity-80">No appointments</p>
           ) : (
-            getAppointmentsForDay(selectedDay).map((appt, i) => (
-              <AppointmentCard
+            appointments.map((a, i) => (
+              <div
                 key={i}
-                appt={appt}
-                onSelect={setSelectedSlot}
-                darkMode={darkMode}
-              />
+                onClick={() => setSelectedSlot(a)}
+                className="border-b border-gray-600 pb-3 mb-3 cursor-pointer"
+              >
+                <p className="text-yellow-400 font-semibold">{a.name}</p>
+                <p className="text-sm">{a.time}</p>
+              </div>
             ))
           )}
         </div>
       </div>
 
-      {/* MODAL */}
       <BookingModal
-        selectedDay={selectedDay}
+        selectedDate={selectedDay}
         slot={selectedSlot}
         onClose={() => setSelectedSlot(null)}
         darkMode={darkMode}
