@@ -121,7 +121,8 @@ transition={{
     >
       {/* MOBILE */}
       <div className="flex md:hidden justify-between items-center w-full px-6 py-4">
-        <Link to="/">
+        <Link onClick={() => setActiveLink(item)}
+ to="/">
           <img
             src="https://cutstyle.true-emotions.studio/wp-content/themes/cutstyle/images/logo.svg"
             alt="Logo"
@@ -152,7 +153,8 @@ transition={{
 
       {/* TABLET */}
       <div className="hidden md:flex lg:hidden justify-between items-center w-full px-8 py-2">
-        <Link to="/">
+        <Link to="/" onClick={() => setActiveLink(item)}
+>
           <img
             src="https://cutstyle.true-emotions.studio/wp-content/themes/cutstyle/images/logo.svg"
             alt="Logo"
@@ -303,7 +305,8 @@ transition={{
       <div className="hidden xl:flex justify-between py-4">
         <nav className="flex justify-between items-center text-xl font-light pl-20 gap-10">
           {menuItems.slice(0, middleIndex).map((item) => (
-            <Link
+            <Link onClick={() => setActiveLink(item)}
+
   to={getPath(item)}
   key={item}
   className={`cursor-pointer transition ${
@@ -319,7 +322,8 @@ transition={{
 
           ))}
 
-          <Link to="/">
+          <Link to="/" onClick={() => setActiveLink(item)}
+>
             <img
               src="https://cutstyle.true-emotions.studio/wp-content/themes/cutstyle/images/logo.svg"
               alt="Logo"
@@ -412,6 +416,7 @@ transition={{
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
+          onClick={() => setActiveLink(item)}
             initial={{ x: "-100%" }}
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
