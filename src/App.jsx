@@ -25,21 +25,19 @@ function App() {
        <ScrollToTop />
      {/* <WhatsAppButton/> */}
      <Routes>
-      
       <Route path="/" element={<Home/>}/>
-      <Route path="/gallery" element={<Gallerypage/>}/>
+      <Route path="/gallery" element={<Gallerypage />}/>
       <Route path='/search' element={<SearchBox />}/>
-      <Route path='/about' element={<About/>}/>
-      <Route path='/service' element={<Servicepage/>}/>
-      <Route path='/booking' element={<BookingPage/>}/>
-      <Route path='/women' element={<Womenlist/>}/>
-      <Route path='/boy' element={<Boylist/>}/>
-      <Route path='/blog' element={<BlogPage/>}/>
-      <Route path='/shop' element={<ShopPage/>}/>
-      <Route path='/contact' element={<Contect/>}/>
-      <Route path="/news1" element={<BlogNews/>}/>
-      <Route path="*" element={<Home/>}/>
-
+      <Route path='/about' element={<About />}/>
+      <Route path='/service' element={<Servicepage />}/>
+      <Route path='/booking' element={<BookingPage />}/>
+      <Route path='/women' element={<Womenlist />}/>
+      <Route path='/boy' element={<Boylist />}/>
+      <Route path='/blog' element={<BlogPage />}/>
+      <Route path='/shop' element={<ShopPage />}/>
+      <Route path='/contact' element={<Contect />}/>
+      <Route path="/news1" element={<BlogNews />}/>
+      <Route path="*" element={<Home />}/>
      </Routes>
    
      <Footer/>
