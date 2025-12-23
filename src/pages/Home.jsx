@@ -7,10 +7,17 @@ import HomeGallery from '../components/home/HomeGallery'
 import InfoSection from '../components/home/InfoSection'
 import Getintouch from '../components/about/Getintouch'
 import CurvedLoop from '../components/about/CurvedLoop'
+import { Helmet } from 'react-helmet-async'
 
 const Home = () => {
   return (
     <div>
+       <Helmet>
+        <title>My Salon</title>
+        <meta name="description" content="Official website for My React Website." />
+        <meta name="author" content="Your Name or Company" />
+        <meta name="keywords" content="react, web app, product name" />
+      </Helmet>
         <Hero/>
         <InfoSection/>
         <Service/>

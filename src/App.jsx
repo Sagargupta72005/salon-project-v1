@@ -28,7 +28,7 @@ function App() {
       <Route path="/" element={<Home/>}/>
       <Route path="/gallery" element={<Gallerypage />}/>
       <Route path='/search' element={<SearchBox />}/>
-      <Route path='/about' element={<About />}/>
+      <Route path='/about' element={<About/>}/>
       <Route path='/service' element={<Servicepage />}/>
       <Route path='/booking' element={<BookingPage />}/>
       <Route path='/women' element={<Womenlist />}/>
